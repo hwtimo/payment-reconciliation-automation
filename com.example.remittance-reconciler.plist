@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  LaunchAgent template (G-13). Replace /Users/automation/remittance-reconciler with the real
+  absolute checkout path, then:
+
+      cp com.example.remittance-reconciler.plist ~/Library/LaunchAgents/
+      launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.example.remittance-reconciler.plist
+
+  Design notes:
+  * LaunchAgent, not LaunchDaemon: the job needs the logged-in user's Keychain. With FileVault
+    enabled nothing runs before the disk is unlocked anyway, so a daemon would not add availability.
+  * StartCalendarInterval gives a fixed local time. launchd coalesces missed runs and may start
+    one when the Mac wakes or the agent loads, so the application also enforces a start window.
+  * No KeepAlive and RunAtLoad false: this is a once-a-day batch job, not a service.
+  * Every path is absolute; launchd does not inherit a shell PATH or working directory.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.example.remittance-reconciler</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/automation/remittance-reconciler/.venv/bin/python</string>
+        <string>-m</string>
+        <string>remittance_reconciler.main</string>
+        <string>--with-portal</string>
+        <string>--config</string>
+        <string>/Users/automation/remittance-reconciler/config.yaml</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/automation/remittance-reconciler</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PYTHONPATH</key>
+        <string>/Users/automation/remittance-reconciler/src</string>
+        <key>RECONCILER_CONFIG</key>
+        <string>/Users/automation/remittance-reconciler/config.yaml</string>
+    </dict>
+
+    <!-- Daily at 03:00 system local time. The application also checks its own start window. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>3</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/automation/remittance-reconciler/logs/launchd.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/automation/remittance-reconciler/logs/launchd.err.log</string>
+
+    <!-- Standard, not Background: browser timeouts were tuned for normal CPU and I/O priority. -->
+    <key>ProcessType</key>
+    <string>Standard</string>
+</dict>
+</plist>

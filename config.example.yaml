@@ -1,0 +1,64 @@
+# remittance-reconciler configuration template.
+#
+# Copy to config.yaml (git-ignored) and replace every placeholder:
+#     cp config.example.yaml config.yaml
+#
+# Money values are strings so YAML never turns them into binary floats.
+# All values below are synthetic.
+
+# --- G-0: cutover guard (required, no default) ------------------------------------------------
+# Mail received before this instant is never processed. Must be timezone-aware ISO-8601.
+automation_start_at: "REPLACE_ME"          # e.g. 2037-06-17T00:00:00-07:00
+
+# --- G-14: kill switch --------------------------------------------------------------------------
+# true = read, reconcile and report, but never cross the write boundary (shadow mode).
+dry_run: true
+
+# --- G-2b: per-run caps -------------------------------------------------------------------------
+# null means unlimited. Per-invoice safety gates apply either way.
+max_invoices_per_run: 50
+max_total_amount_per_run: "10000.00"
+
+# --- G-19: statement age ------------------------------------------------------------------------
+# Quarantine a statement whose header date is older than this at receipt.
+max_statement_age_days: 30
+
+# --- G-21: attempt ceiling for a statement --------------------------------------------------------
+max_statement_attempts: 5
+
+# --- Pacing and date windows --------------------------------------------------------------------
+inter_invoice_delay_seconds: 3
+date_buffer_days: 3
+
+# --- V9: known vendor numbers (hard gate) ---------------------------------------------------------
+# Statements for any other vendor number are quarantined until the number is added here.
+known_vendors:
+  - "8100001"                              # synthetic placeholder
+
+# --- Intake trust gate ----------------------------------------------------------------------------
+# Remittances are forwarded by clinic staff after bank verification. Only these senders are trusted.
+trusted_forwarders:
+  - "billing@clinic.example.com"
+require_dkim_pass: true
+require_dmarc_pass: true
+trusted_dkim_domain_suffix: ""             # optional, e.g. "clinic.example.com"
+trusted_authserv_id: "mx.google.com"       # the receiving MTA whose Authentication-Results are trusted
+
+# --- Reporting --------------------------------------------------------------------------------------
+report_recipients:
+  - "accounting@example.com"
+
+# --- G-5: post-click success signal -----------------------------------------------------------------
+# Exact persisted status that confirms a payment. Empty = every click is UNKNOWN_OUTCOME.
+post_click_success_signals:
+  - "Paid / Settled"
+
+# --- Portal session -----------------------------------------------------------------------------------
+# Dedicated persistent browser profile. It holds session cookies, so treat it as a credential.
+portal_profile_dir: "secrets/portal-profile"
+portal_headless: true
+
+# --- Run window (start time only; a running job is never interrupted) -----------------------------------
+run_window_start: "02:45"
+run_window_end: "04:30"
+run_window_tz: "America/Los_Angeles"

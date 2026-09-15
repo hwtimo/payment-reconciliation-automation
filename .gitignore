@@ -1,0 +1,112 @@
+# ============================================================================
+# Nothing operational may ever be committed: credentials, tokens, browser state,
+# databases, logs, reports, exports, backups, captures or real configuration.
+# ============================================================================
+
+# --- runtime directories: keep the folder, ignore everything inside ------------
+secrets/*
+data/*
+reports/*
+logs/*
+scratch/*
+backups/*
+!secrets/.gitkeep
+!data/.gitkeep
+!reports/.gitkeep
+!logs/.gitkeep
+!scratch/.gitkeep
+!backups/.gitkeep
+
+# --- real configuration and environment ----------------------------------------
+config.yaml
+config.*.yaml
+!config.example.yaml
+.env
+.env.*
+*.env
+.envrc
+
+# --- credentials and tokens, wherever they land ---------------------------------
+credentials.json
+client_secret*.json
+token.json
+*token*.json
+service-account*.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.keychain
+*.keychain-db
+.netrc
+
+# --- browser automation state (session cookies are credentials) ------------------
+*-profile/
+playwright/.auth/
+.auth/
+storage_state*.json
+*.har
+trace.zip
+*.trace.zip
+test-results/
+playwright-report/
+Cookies
+Login Data
+
+# --- databases, journals and incident logs --------------------------------------------
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+*.jsonl
+*.log
+
+# --- exports, emails, screenshots, recordings, documents ------------------------------------
+*.csv
+!tests/fixtures/**/*.csv
+*.eml
+*.mbox
+*.msg
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.heic
+*.mov
+*.mp4
+*.webm
+*.pdf
+*.xlsx
+*.xls
+*.zip
+recon/
+screenshots/
+captures/
+
+# --- python and tooling -------------------------------------------------------------
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.uv/
+
+# --- editors, OS and local assistant settings ----------------------------------------
+.DS_Store
+.idea/
+.vscode/
+*.swp
+.claude/settings.local.json
+CLAUDE.local.md
