@@ -4,6 +4,8 @@ Production payment-reconciliation automation that matches insurance EFT remittan
 
 > This is a de-identified public version of a system deployed for a multi-location healthcare clinic. Names, identifiers, amounts, dates, URLs, UI labels and fixtures in this repository are synthetic, and portal selectors are generic placeholders. See [Privacy](#privacy).
 
+This repository is a sanitized snapshot of a separately developed production system; production Git history is intentionally not published to avoid exposing confidential operational information.
+
 ---
 
 ## Problem
